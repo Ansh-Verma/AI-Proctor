@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import Header from '../components/Header';
 import '../styles.css';
 
 const MyExams = () => {
@@ -35,7 +34,6 @@ const MyExams = () => {
 
   return (
     <div className="exams-container">
-      <Header />
       <div className="exams-content">
         <h2>Available Exams</h2>
         {error && <p className="error-message">{error}</p>}

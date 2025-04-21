@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import Header from '../components/Header';
 import BehaviorMonitor from '../components/BehaviorMonitor';
 import '../styles.css';
 
@@ -154,7 +153,6 @@ const StartExam = () => {
   if (examLocked) {
     return (
       <div className="exam-container">
-        <Header />
         <div className="exam-content">
           <h2>Exam Locked</h2>
           <p>The exam has been locked due to suspicious activity.</p>
@@ -166,7 +164,6 @@ const StartExam = () => {
   if (!exam) {
     return (
       <div className="exam-container">
-        <Header />
         <div className="exam-content">
           <p>{message || 'Loading exam details...'}</p>
         </div>
@@ -176,7 +173,6 @@ const StartExam = () => {
 
   return (
     <div className="exam-container">
-      <Header />
       {showFullScreenModal && (
         <div className="fullscreen-modal">
           <h2>Please allow full-screen mode to start the exam</h2>

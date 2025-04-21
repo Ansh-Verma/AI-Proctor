@@ -1,7 +1,6 @@
 // src/pages/AdminDashboard.js
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import Header from '../components/Header';
 import '../styles.css';
 
 const AdminDashboard = () => {
@@ -9,7 +8,6 @@ const AdminDashboard = () => {
 
   return (
     <div className="dashboard-container">
-      <Header />
       <div className="dashboard-content">
         <h2>Admin Dashboard</h2>
         <div className="dashboard-actions">

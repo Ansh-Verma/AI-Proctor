@@ -16,7 +16,6 @@ import CreateExam from "./pages/CreateExam";
 import MyExams from "./pages/MyExams";
 import RegisterPage from "./pages/RegisterPage";
 import UserTypeSelection from "./pages/UserTypeSelection";
-
 import "./styles.css";
 
 const App = () => {

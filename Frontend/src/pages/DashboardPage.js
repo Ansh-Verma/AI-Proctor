@@ -10,9 +10,6 @@ const DashboardPage = () => {
       {/* Header */}
       <header className="dashboard-header">
         <h1>Dashboard</h1>
-        <button className="logout-btn" onClick={() => navigate("/")}>
-          Logout
-        </button>
       </header>
 
       {/* Main Content */}
