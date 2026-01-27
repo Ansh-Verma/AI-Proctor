@@ -163,7 +163,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    height: 110vh;
     background: linear-gradient(135deg, #667eea, #764ba2, #ff758c);
     background-size: 400% 400%;
     animation: gradientBG 10s ease infinite;
@@ -253,7 +253,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    height: 110vh;
     background: linear-gradient(135deg, #667eea, #764ba2, #ff758c);
     background-size: 400% 400%;
     animation: gradientBG 10s ease infinite;
@@ -308,6 +308,78 @@
     transform: scale(1.05);
     box-shadow: 0 4px 10px rgba(0,114,255,0.4);
   }
+
+.register-card .register-btn {
+  display: block;          
+  width: 100%;
+  padding: 12px 0;         
+  margin-top: 20px;
+  font-size: 1rem;
+  font-weight: 600;
+  text-align: center;
+  color: #fff;
+  background: linear-gradient(90deg, #ff758c, #ff7eb3);
+  border: none;
+  border-radius: 6px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition:
+    background 0.3s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+  cursor: pointer;
+}
+
+.register-card .register-btn:hover {
+  background: linear-gradient(90deg, #ff7eb3, #ff758c);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+
+.register-card .dropdown-container {
+  display: flex;
+  flex-direction: column;
+  margin: 20px 0;
+}
+
+.register-card .dropdown-container label {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #444;
+  margin-bottom: 8px;
+}
+
+.register-card .dropdown-container select {
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 1rem;
+  border: 2px solid #ccc;
+  border-radius: 6px;
+  background-color: #fff;
+  color: #333;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+}
+
+/* Hover state */
+.register-card .dropdown-container select:hover {
+  border-color: #007bff;
+}
+
+/* Focus state */
+.register-card .dropdown-container select:focus {
+  outline: none;
+  border-color: #0056b3;
+  box-shadow: 0 0 5px rgba(0, 91, 187, 0.3);
+}
+
+/* Option text styling (optional) */
+.register-card .dropdown-container select option {
+  padding: 8px;
+  font-size: 0.95rem;
+  color: #333;
+}
+
   
   /* ==========================================================================
      Dashboard Page
@@ -437,90 +509,154 @@
      Start Exam Page
      ========================================================================== */
   
-  .exam-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100vh;
-    background-color: #f4f6f8;
-    padding: 20px;
-    box-sizing: border-box;
-  }
-  
+     /* ========== Start Exam Page ========== */
+.exam-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f4f6f8;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* Full-screen permission modal */
+.fullscreen-modal {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0, 0, 0, 0.75);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+.fullscreen-modal h2 {
+  color: #fff;
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+  text-align: center;
+}
+.fullscreen-btn {
+  background-color: #007bff;
+  color: #fff;
+  padding: 12px 24px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+.fullscreen-btn:hover {
+  background-color: #0056b3;
+  transform: scale(1.05);
+}
+
+/* Main exam content (once in full-screen) */
+.exam-content {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  width: 90%;
+  max-width: 900px;
+  display: flex;
+  flex-direction: row;
+  padding: 20px;
+  gap: 20px;
+  z-index: 1;
+}
+
+/* Left side: questions + timer */
+.exam-left {
+  flex: 1;
+}
+.timer {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 15px;
+  text-align: right;
+}
+
+/* Right side: behavior monitor panel */
+.exam-right {
+  flex: 0 0 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Question block */
+.question-group {
+  margin-bottom: 15px;
+}
+.question-group p {
+  margin-bottom: 5px;
+  font-weight: 500;
+  color: #444;
+}
+
+/* Multiple choice options */
+.options-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.option-label {
+  font-size: 1rem;
+  color: #333;
+}
+
+/* Descriptive input */
+.question-group input[type="text"] {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+/* Submit button */
+.submit-exam-btn {
+  background-color: #28a745;
+  color: #fff;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+.submit-exam-btn:hover {
+  background-color: #218838;
+  transform: scale(1.02);
+}
+
+/* Status / error messages */
+.message {
+  margin-top: 15px;
+  font-size: 1.1rem;
+  text-align: center;
+  color: #e74c3c;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
   .exam-content {
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    width: 90%;
-    max-width: 800px;
-    display: flex;
-    flex-direction: row;
-    padding: 20px;
-    gap: 20px;
+    flex-direction: column;
+    align-items: stretch;
   }
-  
-  .exam-left {
-    flex: 1;
-  }
-  
   .exam-right {
-    flex: 0 0 300px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    display: none; /* hide proctoring panel on small */
   }
-  
-  .question-group {
-    margin-bottom: 15px;
-    text-align: left;
-  }
-  
-  .question-group p {
-    margin-bottom: 5px;
-    font-weight: 500;
-  }
-  
-  .options-group {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-  }
-  
-  .option-label {
-    font-size: 1rem;
-    color: #333;
-  }
-  
-  .question-group input[type="text"] {
-    width: 100%;
-    padding: 8px;
-    margin-top: 5px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 1rem;
-  }
-  
-  .submit-exam-btn {
-    background-color: #4CAF50;
-    color: white;
-    padding: 12px 20px;
-    border: none;
-    border-radius: 5px;
-    font-size: 1rem;
-    cursor: pointer;
-    margin-top: 10px;
-    transition: background 0.3s ease;
-  }
-  
-  .submit-exam-btn:hover {
-    background-color: #45a049;
-  }
-  
-  .message {
-    margin-top: 15px;
-    font-size: 1.1rem;
-    text-align: center;
-  }
+}
+
+
+
   
   /* ==========================================================================
      Create Exam Page
