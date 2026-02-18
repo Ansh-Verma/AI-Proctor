@@ -128,7 +128,7 @@ const CreateExam = () => {
     console.log("Exam Data to be sent:", examData);
     
     try {
-      const response = await axios.post('https://ai-proctor-backend-qy09.onrender.com/api/exams/create', examData);
+      await axios.post('https://ai-proctor-backend-qy09.onrender.com/api/exams/create', examData);
       setMessage('Exam created successfully!');
       // Clear form
       setTitle('');

@@ -8,7 +8,7 @@ const BehaviorMonitor = ({ onWarning = () => {}, onLockExam = () => {} }) => {
   const [modelsLoaded, setModelsLoaded] = useState(false);
   const [warningCount, setWarningCount] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
-  const [stream, setStream] = useState(null);
+  
 
   // Pause duration after a warning (in milliseconds)
   const pauseDuration = 30000; // 30 seconds
@@ -37,7 +37,6 @@ const BehaviorMonitor = ({ onWarning = () => {}, onLockExam = () => {} }) => {
       navigator.mediaDevices.getUserMedia({ video: {} })
         .then((s) => {
           localStream = s;
-          setStream(s);
           if (videoRef.current) {
             videoRef.current.srcObject = s;
           }
