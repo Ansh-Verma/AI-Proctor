@@ -54,7 +54,7 @@ const App = () => {
         </Routes>
       </div>
 
-      {/* global footer */}
+      {/* global Footer */}
       <Footer />
     </Router>
   );
