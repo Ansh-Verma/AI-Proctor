@@ -16,7 +16,7 @@ const ManualReview = () => {
   useEffect(() => {
     const fetchResponse = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/exam-responses/${responseId}`);
+        const res = await axios.get(`https://ai-proctor-backend-qy09.onrender.com/api/exam-responses/${responseId}`);
         setResponseData(res.data);
       } catch (err) {
         console.error(err);
@@ -31,7 +31,7 @@ const ManualReview = () => {
     if (responseData && responseData.examId) {
       const fetchExam = async () => {
         try {
-          const res = await axios.get(`http://localhost:5000/api/exams/${responseData.examId}`);
+          const res = await axios.get(`https://ai-proctor-backend-qy09.onrender.com/api/exams/${responseData.examId}`);
           setExamData(res.data);
         } catch (err) {
           console.error(err);
@@ -50,7 +50,7 @@ const ManualReview = () => {
   const handleOverrideSubmit = async () => {
     try {
       // Update the response score in the backend
-      const res = await axios.put(`http://localhost:5000/api/exam-responses/${responseId}`, {
+      const res = await axios.put(`https://ai-proctor-backend-qy09.onrender.com/api/exam-responses/${responseId}`, {
         score: Number(overrideScore)
       });
       alert(`Override submitted: new score = ${overrideScore}`);

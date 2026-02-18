@@ -14,7 +14,7 @@ const MyExams = () => {
   useEffect(() => {
     const fetchExams = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/exams');
+        const res = await axios.get('https://ai-proctor-backend-qy09.onrender.com/api/exams');
         if (res.data && res.data.length) {
           const sorted = res.data.sort(
             (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
@@ -37,7 +37,7 @@ const MyExams = () => {
     if (!username) return;
     const fetchResponses = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/exam-responses');
+        const res = await axios.get('https://ai-proctor-backend-qy09.onrender.com/api/exam-responses');
         const ids = res.data
           .filter(r => r.studentId === username)
           .map(r => r.examId);

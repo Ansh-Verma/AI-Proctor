@@ -43,7 +43,7 @@ const LoginPage = ({ userType = 'student' }) => {
       return;
     }
     try {
-      const res = await axios.post(`http://localhost:5000/api/users/login/${userType}`, {
+      const res = await axios.post(`https://ai-proctor-backend-qy09.onrender.com/api/users/login/${userType}`, {
         username,
         password,
         faceDescriptor,

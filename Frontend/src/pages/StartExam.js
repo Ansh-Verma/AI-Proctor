@@ -96,7 +96,7 @@ const StartExam = () => {
   useEffect(() => {
     const fetchExam = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/exams/${examId}`);
+        const res = await axios.get(`https://ai-proctor-backend-qy09.onrender.com/api/exams/${examId}`);
         if (res.data) {
           setExam(res.data);
         } else {
@@ -141,7 +141,7 @@ const StartExam = () => {
     };
 
     try {
-      const res = await axios.post('http://localhost:5000/api/exam-responses/submit', submission);
+      const res = await axios.post('https://ai-proctor-backend-qy09.onrender.com/api/exam-responses/submit', submission);
       setMessage('Exam submitted successfully!');
       console.log('Submission response:', res.data);
     } catch (error) {

@@ -14,7 +14,7 @@ const ExamResponses = () => {
   useEffect(() => {
     const fetchResponses = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/exam-responses');
+        const res = await axios.get('https://ai-proctor-backend-qy09.onrender.com/api/exam-responses');
         setResponses(res.data);
       } catch (err) {
         console.error(err);
