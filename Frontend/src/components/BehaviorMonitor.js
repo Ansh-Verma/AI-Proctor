@@ -1,5 +1,6 @@
 // src/components/BehaviorMonitor.js
 import React, { useEffect, useRef, useState } from 'react';
+import '@tensorflow/tfjs';
 import * as faceapi from 'face-api.js';
 import '../styles.css';
 
