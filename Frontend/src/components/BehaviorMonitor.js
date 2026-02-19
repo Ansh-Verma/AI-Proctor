@@ -1,7 +1,5 @@
 // src/components/BehaviorMonitor.js
 import React, { useEffect, useRef, useState } from 'react';
-import '@tensorflow/tfjs';
-import * as faceapi from "face-api.js/dist/face-api.esm.js";
 import '../styles.css';
 
 const BehaviorMonitor = ({ onWarning = () => {}, onLockExam = () => {} }) => {
@@ -9,7 +7,6 @@ const BehaviorMonitor = ({ onWarning = () => {}, onLockExam = () => {} }) => {
   const [modelsLoaded, setModelsLoaded] = useState(false);
   const [warningCount, setWarningCount] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
-  
 
   // Pause duration after a warning (in milliseconds)
   const pauseDuration = 30000; // 30 seconds
@@ -17,6 +14,11 @@ const BehaviorMonitor = ({ onWarning = () => {}, onLockExam = () => {} }) => {
   // Load face-api.js models from public/models
   useEffect(() => {
     const loadModels = async () => {
+      const faceapi = window.faceapi;
+      if (!faceapi) {
+        console.error('face-api not found on window. Make sure you added the CDN script to public/index.html');
+        return;
+      }
       const MODEL_URL = process.env.PUBLIC_URL + '/models';
       try {
         await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL);
@@ -35,7 +37,7 @@ const BehaviorMonitor = ({ onWarning = () => {}, onLockExam = () => {} }) => {
   useEffect(() => {
     let localStream;
     if (modelsLoaded) {
-      navigator.mediaDevices.getUserMedia({ video: {} })
+      navigator.mediaDevices.getUserMedia({ video: true })
         .then((s) => {
           localStream = s;
           if (videoRef.current) {
@@ -54,28 +56,34 @@ const BehaviorMonitor = ({ onWarning = () => {}, onLockExam = () => {} }) => {
   // Periodically check the video feed and monitor behavior
   useEffect(() => {
     let interval;
-    if (modelsLoaded && !isPaused) {
+    const faceapi = window.faceapi;
+    if (modelsLoaded && !isPaused && faceapi) {
       interval = setInterval(async () => {
         if (videoRef.current) {
-          const detection = await faceapi
-            .detectSingleFace(videoRef.current, new faceapi.TinyFaceDetectorOptions())
-            .withFaceLandmarks()
-            .withFaceDescriptor();
-          if (!detection) {
-            // Issue warning and pause monitoring automatically
-            setWarningCount(prevCount => {
-              const newCount = prevCount + 1;
-              onWarning(newCount); // Let parent know a warning has been issued
-              if (newCount >= 3) {
-                onLockExam(); // Lock exam after 3 warnings
-              } else {
-                setIsPaused(true);
-                setTimeout(() => {
-                  setIsPaused(false);
-                }, pauseDuration);
-              }
-              return newCount;
-            });
+          try {
+            const detection = await faceapi
+              .detectSingleFace(videoRef.current, new faceapi.TinyFaceDetectorOptions())
+              .withFaceLandmarks()
+              .withFaceDescriptor();
+            if (!detection) {
+              // Issue warning and pause monitoring automatically
+              setWarningCount(prevCount => {
+                const newCount = prevCount + 1;
+                onWarning(newCount); // Let parent know a warning has been issued
+                if (newCount >= 3) {
+                  onLockExam(); // Lock exam after 3 warnings
+                } else {
+                  setIsPaused(true);
+                  setTimeout(() => {
+                    setIsPaused(false);
+                  }, pauseDuration);
+                }
+                return newCount;
+              });
+            }
+          } catch (err) {
+            // detection may throw if video not ready — ignore or log
+            console.debug('face detection error (ignored):', err);
           }
         }
       }, 5000); // Check every 5 seconds
