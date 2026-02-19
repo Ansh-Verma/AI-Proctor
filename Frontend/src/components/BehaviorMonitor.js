@@ -1,7 +1,7 @@
 // src/components/BehaviorMonitor.js
 import React, { useEffect, useRef, useState } from 'react';
 import '@tensorflow/tfjs';
-import * as faceapi from 'face-api.js';
+import * as faceapi from "face-api.js/dist/face-api.esm.js";
 import '../styles.css';
 
 const BehaviorMonitor = ({ onWarning = () => {}, onLockExam = () => {} }) => {
