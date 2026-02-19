@@ -1,6 +1,5 @@
 // src/components/FaceCapture.js
 import React, { useEffect, useRef, useImperativeHandle, useState } from 'react';
-import * as faceapi from 'face-api.js';
 import '../styles.css';
 
 const FaceCapture = React.forwardRef(({ onCapture }, ref) => {
@@ -10,64 +9,67 @@ const FaceCapture = React.forwardRef(({ onCapture }, ref) => {
 
   useEffect(() => {
     const loadModels = async () => {
+      const faceapi = window.faceapi;
+
+      if (!faceapi) {
+        setError('face-api not loaded. Check CDN in index.html');
+        return;
+      }
+
       const MODEL_URL = process.env.PUBLIC_URL + '/models';
+
       try {
         await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL);
         await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL);
         await faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL);
         setModelsLoaded(true);
       } catch (err) {
-        console.error('Error loading models:', err);
-        setError('Error loading face detection models.');
+        console.error(err);
+        setError('Error loading models');
       }
     };
+
     loadModels();
   }, []);
 
   useEffect(() => {
     let localStream;
+
     if (modelsLoaded) {
-      navigator.mediaDevices.getUserMedia({ video: {} })
+      navigator.mediaDevices.getUserMedia({ video: true })
         .then((stream) => {
           localStream = stream;
-          if (videoRef.current) {
-            videoRef.current.srcObject = stream;
-          }
+          if (videoRef.current) videoRef.current.srcObject = stream;
         })
-        .catch((err) => {
-          console.error("Error accessing webcam:", err);
-          setError('Error accessing webcam.');
-        });
+        .catch(() => setError('Webcam access denied'));
     }
+
     return () => {
-      if (localStream) {
-        localStream.getTracks().forEach((track) => track.stop());
-      }
+      if (localStream) localStream.getTracks().forEach(t => t.stop());
     };
   }, [modelsLoaded]);
-  
 
-  // Capture face descriptor and convert to plain array
   const captureFace = async () => {
-    setError('');
-    if (videoRef.current) {
+    const faceapi = window.faceapi;
+    if (!faceapi || !videoRef.current) return;
+
+    try {
       const detection = await faceapi
         .detectSingleFace(videoRef.current, new faceapi.TinyFaceDetectorOptions())
         .withFaceLandmarks()
         .withFaceDescriptor();
-      if (detection && detection.descriptor) {
-        const descriptorArray = Array.from(detection.descriptor);
-        onCapture(descriptorArray);
+
+      if (detection?.descriptor) {
+        onCapture(Array.from(detection.descriptor));
       } else {
-        setError('No face detected. Please try again.');
+        setError('No face detected');
       }
+    } catch (e) {
+      console.log(e);
     }
   };
 
-  // Expose captureFace function to parent via ref
-  useImperativeHandle(ref, () => ({
-    captureFace
-  }));
+  useImperativeHandle(ref, () => ({ captureFace }));
 
   return (
     <div className="face-capture">
