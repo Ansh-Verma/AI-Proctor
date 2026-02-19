@@ -16,43 +16,51 @@ const ManualReview = () => {
   useEffect(() => {
     const fetchResponse = async () => {
       try {
-        const res = await axios.get(`https://ai-proctor-backend-qy09.onrender.com/api/exam-responses/${responseId}`);
-        setResponseData(res.data);
+        const response = await axios.get(
+          `https://ai-proctor-backend-qy09.onrender.com/api/exam-responses/${responseId}`
+        );
+        setResponseData(response.data);
       } catch (err) {
         console.error(err);
         setError('Error fetching response details.');
       }
     };
-    fetchResponse();
+    if (responseId) fetchResponse();
   }, [responseId]);
 
   // Once the response is loaded, fetch the exam details to get question texts
   useEffect(() => {
-    if (responseData && responseData.examId) {
-      const fetchExam = async () => {
-        try {
-          const res = await axios.get(`https://ai-proctor-backend-qy09.onrender.com/api/exams/${responseData.examId}`);
-          setExamData(res.data);
-        } catch (err) {
-          console.error(err);
-          setError('Error fetching exam details.');
-        }
-      };
-      fetchExam();
-    }
+    if (!responseData || !responseData.examId) return;
+
+    const fetchExam = async () => {
+      try {
+        const response = await axios.get(
+          `https://ai-proctor-backend-qy09.onrender.com/api/exams/${responseData.examId}`
+        );
+        setExamData(response.data);
+      } catch (err) {
+        console.error(err);
+        setError('Error fetching exam details.');
+      }
+    };
+    fetchExam();
   }, [responseData]);
 
   // Compute marks per question (assuming total marks = 100)
-  const marksPerQuestion = examData && examData.questions && examData.questions.length
-    ? 100 / examData.questions.length
-    : 0;
+  const marksPerQuestion =
+    examData && examData.questions && examData.questions.length
+      ? 100 / examData.questions.length
+      : 0;
 
   const handleOverrideSubmit = async () => {
     try {
-      // Update the response score in the backend
-      const res = await axios.put(`https://ai-proctor-backend-qy09.onrender.com/api/exam-responses/${responseId}`, {
-        score: Number(overrideScore)
-      });
+      // Update the response score in the backend (no unused variable)
+      await axios.put(
+        `https://ai-proctor-backend-qy09.onrender.com/api/exam-responses/${responseId}`,
+        {
+          score: Number(overrideScore),
+        }
+      );
       alert(`Override submitted: new score = ${overrideScore}`);
       navigate('/exam-responses');
     } catch (err) {
@@ -83,15 +91,15 @@ const ManualReview = () => {
 
   // Create a mapping from questionId to question text and type from the exam data
   const questionMapping = {};
-  examData.questions.forEach(q => {
+  (examData.questions || []).forEach((q) => {
     questionMapping[q._id] = {
       text: q.questionText,
-      type: q.type
+      type: q.type,
     };
   });
 
-  // Filter only descriptive responses
-  const descriptiveResponses = responseData.responses.filter(r => {
+  // Filter only descriptive responses (safe access if responses missing)
+  const descriptiveResponses = (responseData.responses || []).filter((r) => {
     const q = questionMapping[r.questionId];
     return q && q.type === 'descriptive';
   });
@@ -106,26 +114,51 @@ const ManualReview = () => {
           Back to Responses
         </button>
         <div className="review-details">
-          <p><strong>Student Username:</strong> {responseData.studentId}</p>
-          <p><strong>Exam ID:</strong> {responseData.examId}</p>
-          <p><strong>Submission Time:</strong> {new Date(responseData.submittedAt).toLocaleString()}</p>
-          <p><strong>Plagiarism Score:</strong> {responseData.plagiarismScore ?? 'N/A'}</p>
-          <p><strong>Current Score:</strong> {responseData.score ?? 'N/A'}</p>
-          
+          <p>
+            <strong>Student Username:</strong> {responseData.studentId}
+          </p>
+          <p>
+            <strong>Exam ID:</strong> {responseData.examId}
+          </p>
+          <p>
+            <strong>Submission Time:</strong>{' '}
+            {responseData.submittedAt
+              ? new Date(responseData.submittedAt).toLocaleString()
+              : 'N/A'}
+          </p>
+          <p>
+            <strong>Plagiarism Score:</strong>{' '}
+            {responseData.plagiarismScore ?? 'N/A'}
+          </p>
+          <p>
+            <strong>Current Score:</strong> {responseData.score ?? 'N/A'}
+          </p>
+
           <h3>Descriptive Answers</h3>
           {descriptiveResponses.length === 0 ? (
             <p>No descriptive responses to review.</p>
           ) : (
             descriptiveResponses.map((r, idx) => (
               <div key={idx} className="review-answer-block">
-                <p><strong>Question:</strong> {questionMapping[r.questionId]?.text || 'N/A'}</p>
-                <p><strong>Student Answer:</strong> {r.descriptiveAnswer}</p>
                 <p>
-                  <strong>Similarity:</strong>{' '}{r.similarity !== undefined && r.similarity !== null
+                  <strong>Question:</strong>{' '}
+                  {questionMapping[r.questionId]?.text || 'N/A'}
+                </p>
+                <p>
+                  <strong>Student Answer:</strong> {r.descriptiveAnswer || 'N/A'}
+                </p>
+                <p>
+                  <strong>Similarity:</strong>{' '}
+                  {r.similarity !== undefined && r.similarity !== null
                     ? r.similarity.toFixed(2)
                     : 'N/A'}
                 </p>
-                <p><strong>Total Marks for Question:</strong> {marksPerQuestion.toFixed(2)}</p>
+                <p>
+                  <strong>Total Marks for Question:</strong>{' '}
+                  {Number.isFinite(marksPerQuestion)
+                    ? marksPerQuestion.toFixed(2)
+                    : '0.00'}
+                </p>
               </div>
             ))
           )}

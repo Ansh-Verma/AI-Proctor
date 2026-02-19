@@ -3,14 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@tensorflow/tfjs-node": "^4.22.0",
     "axios": "^1.7.9",
-    "cors": "^2.8.5",
-    "cra-template": "1.2.0",
-    "dotenv": "^16.4.7",
-    "express": "^4.21.2",
     "face-api.js": "^0.22.2",
-    "mongoose": "^8.10.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.0.2",
@@ -22,6 +16,11 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
+  },
+  "browser": {
+    "fs": false,
+    "path": false,
+    "crypto": false
   },
   "eslintConfig": {
     "extends": [

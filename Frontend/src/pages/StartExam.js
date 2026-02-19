@@ -1,5 +1,5 @@
 // src/pages/StartExam.js
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import BehaviorMonitor from '../components/BehaviorMonitor';
@@ -15,9 +15,16 @@ const StartExam = () => {
   const [message, setMessage] = useState('');
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [showFullScreenModal, setShowFullScreenModal] = useState(true);
-  
-  // Warning counter for leaving full screen or switching tabs
-  let warningCount = 0;
+
+  // Warning counter for leaving full screen or switching tabs (use state so it persists across renders)
+  const [warningCount, setWarningCount] = useState(0);
+  const WARNING_LIMIT = 3;
+
+  // Lock exam (useCallback so it's stable across effects)
+  const handleLockExam = useCallback(() => {
+    setExamLocked(true);
+    alert('Exam locked due to suspicious activity.');
+  }, []);
 
   // Full-screen request (triggered by button click in modal)
   const requestFullScreen = async () => {
@@ -26,8 +33,10 @@ const StartExam = () => {
       if (elem.requestFullscreen) {
         await elem.requestFullscreen();
       } else if (elem.webkitRequestFullscreen) { // Safari
+        // @ts-ignore
         await elem.webkitRequestFullscreen();
       } else if (elem.msRequestFullscreen) { // IE11
+        // @ts-ignore
         await elem.msRequestFullscreen();
       }
       setIsFullScreen(true);
@@ -44,26 +53,31 @@ const StartExam = () => {
   useEffect(() => {
     if (!isFullScreen) return;
 
-    const checkWarnings = () => {
-      if (warningCount >= 3) {
-        alert('Maximum warnings reached. The exam will now be locked.');
+    const checkWarnings = (currentCount) => {
+      if (currentCount >= WARNING_LIMIT) {
+        // Lock exam when limit reached
         handleLockExam();
       }
     };
 
     const handleVisibilityChange = () => {
-      if (document.hidden) {
-        warningCount++;
-        alert(`Warning ${warningCount}: Do not switch tabs or minimize the window.`);
-        checkWarnings();
-      }
+      setWarningCount(prev => {
+        const newCount = prev + 1;
+        alert(`Warning ${newCount}: Do not switch tabs or minimize the window.`);
+        checkWarnings(newCount);
+        return newCount;
+      });
     };
 
     const handleFullscreenChange = () => {
+      // If full-screen is exited
       if (!document.fullscreenElement) {
-        warningCount++;
-        alert(`Warning ${warningCount}: Please remain in full-screen mode.`);
-        checkWarnings();
+        setWarningCount(prev => {
+          const newCount = prev + 1;
+          alert(`Warning ${newCount}: Please remain in full-screen mode.`);
+          checkWarnings(newCount);
+          return newCount;
+        });
       }
     };
 
@@ -90,7 +104,7 @@ const StartExam = () => {
       document.removeEventListener('keydown', handleKeyDown);
       document.removeEventListener('contextmenu', handleContextMenu);
     };
-  }, [isFullScreen, navigate]);
+  }, [isFullScreen, handleLockExam]);
 
   // Fetch exam details using examId from URL
   useEffect(() => {
@@ -107,18 +121,29 @@ const StartExam = () => {
         setMessage('Error fetching exam details.');
       }
     };
-    fetchExam();
+    if (examId) fetchExam();
   }, [examId]);
 
   // Callback from BehaviorMonitor (if additional behavioral warnings are needed)
-  const handleWarning = (count) => {
-    alert(`Warning ${count}: Please focus on the exam.`);
-  };
-
-  // Lock exam if warnings exceed threshold
-  const handleLockExam = () => {
-    setExamLocked(true);
-    alert('Exam locked due to suspicious activity.');
+  // face monitor will call onWarning(newCount) or onLockExam()
+  const handleWarning = (countFromMonitor) => {
+    // If BehaviorMonitor provides the new count, keep our state in sync.
+    if (typeof countFromMonitor === 'number') {
+      setWarningCount(countFromMonitor);
+      if (countFromMonitor >= WARNING_LIMIT) {
+        handleLockExam();
+      } else {
+        alert(`Warning ${countFromMonitor}: Please focus on the exam.`);
+      }
+    } else {
+      // Fallback: increment if no count provided
+      setWarningCount(prev => {
+        const newCount = prev + 1;
+        if (newCount >= WARNING_LIMIT) handleLockExam();
+        else alert(`Warning ${newCount}: Please focus on the exam.`);
+        return newCount;
+      });
+    }
   };
 
   // Capture student's answer for each question
@@ -130,11 +155,11 @@ const StartExam = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!exam) return;
-    
+
     const submission = {
       examId: exam._id,
       studentId: localStorage.getItem('username') || 'student123',
-      responses: exam.questions.map((q) => ({
+      responses: (exam.questions || []).map((q) => ({
         questionId: q._id || q.questionText,
         answer: responses[q._id || q.questionText] || ''
       }))
@@ -144,6 +169,8 @@ const StartExam = () => {
       const res = await axios.post('https://ai-proctor-backend-qy09.onrender.com/api/exam-responses/submit', submission);
       setMessage('Exam submitted successfully!');
       console.log('Submission response:', res.data);
+      // Optionally redirect after submit:
+      // navigate('/exam-responses');
     } catch (error) {
       console.error('Error submitting exam:', error);
       setMessage('Error submitting exam.');
@@ -153,7 +180,6 @@ const StartExam = () => {
   if (examLocked) {
     return (
       <div className="exam-container">
-        
         <div className="exam-content">
           <h2>Exam Locked</h2>
           <p>The exam has been locked due to suspicious activity.</p>
@@ -165,7 +191,6 @@ const StartExam = () => {
   if (!exam) {
     return (
       <div className="exam-container">
-        
         <div className="exam-content">
           <p>{message || 'Loading exam details...'}</p>
         </div>
@@ -175,7 +200,6 @@ const StartExam = () => {
 
   return (
     <div className="exam-container">
-     
       {showFullScreenModal && (
         <div className="fullscreen-modal">
           <h2>Please allow full-screen mode to start the exam</h2>
@@ -190,7 +214,7 @@ const StartExam = () => {
             <h2>{exam.title}</h2>
             <p>Duration: {exam.duration} minutes</p>
             <form onSubmit={handleSubmit} className="exam-form">
-              {exam.questions.map((question, index) => (
+              {(exam.questions || []).map((question, index) => (
                 <div key={index} className="question-group">
                   <p>{question.questionText}</p>
                   {question.options && question.options.length > 0 ? (
@@ -236,6 +260,9 @@ const StartExam = () => {
           </div>
           <div className="exam-right">
             <BehaviorMonitor onWarning={handleWarning} onLockExam={handleLockExam} />
+            <div style={{ marginTop: 12 }}>
+              <strong>Warnings:</strong> {warningCount}
+            </div>
           </div>
         </div>
       )}
