@@ -32,7 +32,6 @@ const CreateExam = () => {
     if (field === 'type' && value === QUESTION_TYPES.DESCRIPTIVE) {
       newQuestions[index].options = [];
       newQuestions[index].correctAnswer = null;
-      // Optionally, you can also clear referenceAnswer and wordLimit, or leave them as-is for editing.
     }
     
     setQuestions(newQuestions);
@@ -104,7 +103,6 @@ const CreateExam = () => {
     }
 
     // Transform questions:
-    // For descriptive questions, include only questionText, type, referenceAnswer, and wordLimit.
     const transformedQuestions = questions.map(q => {
       if (q.type === QUESTION_TYPES.DESCRIPTIVE) {
         return {
@@ -115,10 +113,8 @@ const CreateExam = () => {
           options: []
         };
       }
-      return q; // For multiple-choice, keep all fields as is.
+      return q;
     });
-
-   // console.log("Transformed Questions:", transformedQuestions);
 
     const examData = {
       title,
@@ -154,20 +150,22 @@ const CreateExam = () => {
       <h2>Create New Exam</h2>
       <form onSubmit={handleSubmit} className="create-exam-form">
         <div className="form-group">
-          <label>Exam Title:</label>
+          <label>Exam Title</label>
           <input
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
+            placeholder="Enter exam title"
             required
           />
         </div>
         <div className="form-group">
-          <label>Duration (in minutes):</label>
+          <label>Duration (minutes)</label>
           <input
             type="number"
             value={duration}
             onChange={(e) => setDuration(e.target.value)}
+            placeholder="e.g. 60"
             required
           />
         </div>
@@ -176,16 +174,17 @@ const CreateExam = () => {
         {questions.map((question, index) => (
           <div key={index} className="question-group">
             <div className="form-group">
-              <label>Question Text:</label>
+              <label>Question {index + 1}</label>
               <input
                 type="text"
                 value={question.questionText}
                 onChange={(e) => handleQuestionChange(index, 'questionText', e.target.value)}
+                placeholder="Enter question text"
                 required
               />
             </div>
             <div className="form-group">
-              <label>Question Type:</label>
+              <label>Question Type</label>
               <select
                 value={question.type}
                 onChange={(e) => handleQuestionChange(index, 'type', e.target.value)}
@@ -198,11 +197,12 @@ const CreateExam = () => {
               <>
                 {question.options.map((option, oIndex) => (
                   <div key={oIndex} className="form-group option-group">
-                    <label>Option {oIndex + 1}:</label>
+                    <label>Option {oIndex + 1}</label>
                     <input
                       type="text"
                       value={option}
                       onChange={(e) => handleOptionChange(index, oIndex, e.target.value)}
+                      placeholder={`Enter option ${oIndex + 1}`}
                       required
                     />
                     <button
@@ -210,7 +210,7 @@ const CreateExam = () => {
                       className={`mark-correct-btn ${question.correctAnswer === oIndex ? 'selected' : ''}`}
                       onClick={() => handleCorrectAnswerSelect(index, oIndex)}
                     >
-                      {question.correctAnswer === oIndex ? 'Correct' : 'Mark as Correct'}
+                      {question.correctAnswer === oIndex ? '✓ Correct' : 'Mark Correct'}
                     </button>
                   </div>
                 ))}
@@ -218,17 +218,17 @@ const CreateExam = () => {
             ) : (
               <>
                 <div className="form-group">
-                  <label>Reference Answer (for grading):</label>
+                  <label>Reference Answer</label>
                   <textarea
                     value={question.referenceAnswer}
                     onChange={(e) => handleQuestionChange(index, 'referenceAnswer', e.target.value)}
-                    placeholder="Enter a model answer for reference"
+                    placeholder="Enter a model answer for reference grading"
                     rows="3"
                     required
                   />
                 </div>
                 <div className="form-group">
-                  <label>Word Limit:</label>
+                  <label>Word Limit</label>
                   <input
                     type="number"
                     value={question.wordLimit}
@@ -243,6 +243,7 @@ const CreateExam = () => {
                 type="button"
                 className="remove-question-btn"
                 onClick={() => removeQuestion(index)}
+                style={{ marginTop: 'var(--space-md)' }}
               >
                 Remove Question
               </button>
@@ -250,7 +251,7 @@ const CreateExam = () => {
           </div>
         ))}
         <button type="button" onClick={addQuestion} className="add-question-btn">
-          Add Another Question
+          + Add Another Question
         </button>
         <button type="submit" className="create-exam-btn">Create Exam</button>
       </form>

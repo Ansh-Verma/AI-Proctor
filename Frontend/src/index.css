@@ -1,11 +1,133 @@
-/* src/index.css */
-body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-  background-color: #f4f4f9;
+/* ============================================================
+   Design Tokens & Global Reset
+   ============================================================ */
+
+:root {
+  /* ── Palette ── */
+  --bg-primary:    #0f172a;
+  --bg-secondary:  #1e293b;
+  --bg-tertiary:   #334155;
+  --bg-surface:    rgba(30, 41, 59, 0.65);
+
+  --text-primary:   #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-muted:     #64748b;
+  --text-dark:      #1e293b;
+
+  --accent:         #14b8a6;
+  --accent-hover:   #0d9488;
+  --accent-glow:    rgba(20, 184, 166, 0.25);
+
+  --highlight:      #f59e0b;
+  --highlight-hover: #d97706;
+
+  --danger:         #ef4444;
+  --danger-hover:   #dc2626;
+
+  --success:        #22c55e;
+  --success-bg:     rgba(34, 197, 94, 0.12);
+
+  --warning:        #eab308;
+
+  --border-subtle:  rgba(148, 163, 184, 0.15);
+  --border-focus:   var(--accent);
+
+  /* ── Glass ── */
+  --glass-bg:       rgba(15, 23, 42, 0.55);
+  --glass-border:   rgba(148, 163, 184, 0.12);
+  --glass-blur:     16px;
+
+  /* ── Radii ── */
+  --radius-sm:  6px;
+  --radius-md:  12px;
+  --radius-lg:  20px;
+  --radius-xl:  28px;
+  --radius-full: 9999px;
+
+  /* ── Shadows ── */
+  --shadow-sm:  0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-md:  0 4px 14px rgba(0, 0, 0, 0.35);
+  --shadow-lg:  0 10px 40px rgba(0, 0, 0, 0.4);
+  --shadow-glow: 0 0 30px var(--accent-glow);
+
+  /* ── Spacing ── */
+  --space-xs:  4px;
+  --space-sm:  8px;
+  --space-md:  16px;
+  --space-lg:  24px;
+  --space-xl:  40px;
+  --space-2xl: 64px;
+
+  /* ── Transitions ── */
+  --ease-out:   cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-fast:  0.15s var(--ease-out);
+  --transition-base:  0.25s var(--ease-out);
+  --transition-slow:  0.4s var(--ease-out);
+
+  /* ── Font ── */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
-* {
+/* ── Reset ── */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  font-family: inherit;
+}
+
+img, video {
+  max-width: 100%;
+  display: block;
+}
+
+input, select, textarea {
+  font-family: inherit;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-full);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* ── Selection ── */
+::selection {
+  background: var(--accent);
+  color: var(--bg-primary);
 }

@@ -1,3 +1,4 @@
+// src/pages/DashboardPage.js
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles.css";
@@ -9,12 +10,15 @@ const DashboardPage = () => {
     <div className="dashboard-container">
       {/* Header */}
       <header className="dashboard-header">
-        <h1>Dashboard</h1>
+        <h1>Student Dashboard</h1>
       </header>
 
       {/* Main Content */}
       <div className="dashboard-content">
-        <h2>Welcome to AI Based: Proctored Examination Portal</h2>
+        <h2>Welcome to AI Proctored Examination Portal</h2>
+        <p style={{ color: 'var(--text-secondary)', marginBottom: 'var(--space-md)' }}>
+          Select an option below to get started.
+        </p>
 
         {/* Action Buttons */}
         <div className="dashboard-actions">

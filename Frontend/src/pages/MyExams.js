@@ -60,7 +60,9 @@ const MyExams = () => {
         <h2>Available Exams</h2>
         {error && <p className="error-message">{error}</p>}
         {exams.length === 0 ? (
-          <p>No exams available at this time.</p>
+          <p style={{ color: 'var(--text-muted)', padding: 'var(--space-xl) 0' }}>
+            No exams available at this time.
+          </p>
         ) : (
           <div className="exams-list">
             {exams.map((exam) => {
@@ -72,7 +74,7 @@ const MyExams = () => {
                   onClick={() => handleExamClick(exam._id)}
                 >
                   <h3>{exam.title}</h3>
-                  <p>Duration: {exam.duration} minutes</p>
+                  <p>⏱ Duration: {exam.duration} minutes</p>
                   {attempted && (
                     <span className="attempted-badge">Already Attempted</span>
                   )}

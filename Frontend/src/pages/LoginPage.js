@@ -74,65 +74,81 @@ const LoginPage = ({ userType = 'student' }) => {
 
   return (
     <div className="login-container">
-      <div className="login-card">
-        <h2 className="login-title">
-          {userType === 'admin' ? 'Admin Login' : 'Student Login'}
-        </h2>
-        <form onSubmit={handleSubmit} className="login-form">
-          <div className="form-group">
-            <label htmlFor="username">Username</label>
-            <input
-              type="text"
-              id="username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              className="input-field"
-              placeholder="Enter your username"
-              required
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="password">Password</label>
-            <input
-              type="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="input-field"
-              placeholder="Enter your password"
-              required
-            />
-          </div>
-          {/* Render FaceCapture without its own button */}
-          <FaceCapture onCapture={handleFaceCapture} ref={faceCaptureRef} />
+      {/* Left branding panel */}
+      <div className="login-brand-panel">
+        <div className="login-brand-icon">
+          {userType === 'admin' ? '🛡️' : '🎓'}
+        </div>
+        <h2>{userType === 'admin' ? 'Admin Portal' : 'Student Portal'}</h2>
+        <p>
+          {userType === 'admin'
+            ? 'Manage exams, review responses, and oversee results with full administrative control.'
+            : 'Access your exams with AI-powered face verification and secure proctoring.'}
+        </p>
+      </div>
 
-          {/* Custom Capture Face Button */}
-          <button
-            type="button"
-            className="capture-btn"
-            onClick={triggerCapture}
-          >
-            <i className="fas fa-camera"></i> Capture Face
-          </button>
+      {/* Right form panel */}
+      <div className="login-form-panel">
+        <div className="login-card">
+          <h2 className="login-title">
+            {userType === 'admin' ? 'Admin Login' : 'Student Login'}
+          </h2>
+          <form onSubmit={handleSubmit} className="login-form">
+            <div className="form-group">
+              <label htmlFor="username">Username</label>
+              <input
+                type="text"
+                id="username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                className="input-field"
+                placeholder="Enter your username"
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="password">Password</label>
+              <input
+                type="password"
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="input-field"
+                placeholder="Enter your password"
+                required
+              />
+            </div>
+            {/* Render FaceCapture without its own button */}
+            <FaceCapture onCapture={handleFaceCapture} ref={faceCaptureRef} />
 
-          {faceCaptured ? (
-            <p className="success-message">✅ Face captured successfully!</p>
-          ) : (
-            <p className="error-message">⚠ Capture your face before logging in.</p>
-          )}
-          {error && <p className="error-message">{error}</p>}
-          <button type="submit" className="login-btn" disabled={!faceCaptured}>
-            Login
-          </button>
-        </form>
-        {/* Registration link for new users */}
-        <div className="register-link">
-          <p>
-            New user?{' '}
-            <span onClick={() => navigate('/register')} className="link-text">
-              Register here
-            </span>
-          </p>
+            {/* Custom Capture Face Button */}
+            <button
+              type="button"
+              className="capture-btn"
+              onClick={triggerCapture}
+            >
+              <i className="fas fa-camera"></i> Capture Face
+            </button>
+
+            {faceCaptured ? (
+              <p className="success-message">✅ Face captured successfully!</p>
+            ) : (
+              <p className="error-message">⚠ Capture your face before logging in.</p>
+            )}
+            {error && <p className="error-message">{error}</p>}
+            <button type="submit" className="login-btn" disabled={!faceCaptured}>
+              Login
+            </button>
+          </form>
+          {/* Registration link for new users */}
+          <div className="register-link">
+            <p>
+              New user?{' '}
+              <span onClick={() => navigate('/register')} className="link-text">
+                Register here
+              </span>
+            </p>
+          </div>
         </div>
       </div>
     </div>

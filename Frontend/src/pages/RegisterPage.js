@@ -68,25 +68,25 @@ const RegisterPage = () => {
   return (
     <div className="register-container">
       <div className="register-card">
-        <h2>Register</h2>
+        <h2>Create Account</h2>
         <form onSubmit={handleSubmit} className="register-form">
           <div className="form-group">
-            <label>Username:</label>
+            <label>Username</label>
             <input 
               type="text" 
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              placeholder="Enter your username"
+              placeholder="Choose a username"
               required
             />
           </div>
           <div className="form-group">
-            <label>Password:</label>
+            <label>Password</label>
             <input 
               type="password" 
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter your password"
+              placeholder="Create a strong password"
               required
             />
           </div>
@@ -115,7 +115,7 @@ const RegisterPage = () => {
           )}
 
           {error && <p className="error-message">{error}</p>}
-          {message && <p className="message">{message}</p>}
+          {message && <p className="success-message">{message}</p>}
 
           <button type="submit" className="register-btn" disabled={!faceCaptured}>
             Register

@@ -1,3 +1,4 @@
+// src/pages/ProfilePage.js
 import React, { useEffect, useState } from 'react';
 import '../styles.css';
 
@@ -24,11 +25,14 @@ const ProfilePage = () => {
   return (
     <div className="profile-container">
       <div className="profile-content">
+        <div className="profile-avatar">
+          {username ? username.charAt(0).toUpperCase() : '?'}
+        </div>
         <div className="profile-main">
           <h2>Your Profile</h2>
-          {/* Display the actual username instead of a hardcoded value */}
-          <p><strong>Username:</strong> {username}</p>
-          {/* Removed the email field entirely */}
+          <p className="profile-info">
+            <strong>Username:</strong> {username}
+          </p>
           <button className="logout-btn" onClick={handleLogout}>
             Logout
           </button>

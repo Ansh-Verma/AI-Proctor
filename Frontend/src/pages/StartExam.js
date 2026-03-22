@@ -125,9 +125,7 @@ const StartExam = () => {
   }, [examId]);
 
   // Callback from BehaviorMonitor (if additional behavioral warnings are needed)
-  // face monitor will call onWarning(newCount) or onLockExam()
   const handleWarning = (countFromMonitor) => {
-    // If BehaviorMonitor provides the new count, keep our state in sync.
     if (typeof countFromMonitor === 'number') {
       setWarningCount(countFromMonitor);
       if (countFromMonitor >= WARNING_LIMIT) {
@@ -136,7 +134,6 @@ const StartExam = () => {
         alert(`Warning ${countFromMonitor}: Please focus on the exam.`);
       }
     } else {
-      // Fallback: increment if no count provided
       setWarningCount(prev => {
         const newCount = prev + 1;
         if (newCount >= WARNING_LIMIT) handleLockExam();
@@ -169,8 +166,6 @@ const StartExam = () => {
       const res = await axios.post('https://ai-proctor-backend-qy09.onrender.com/api/exam-responses/submit', submission);
       setMessage('Exam submitted successfully!');
       console.log('Submission response:', res.data);
-      // Optionally redirect after submit:
-      // navigate('/exam-responses');
     } catch (error) {
       console.error('Error submitting exam:', error);
       setMessage('Error submitting exam.');
@@ -180,9 +175,9 @@ const StartExam = () => {
   if (examLocked) {
     return (
       <div className="exam-container">
-        <div className="exam-content">
-          <h2>Exam Locked</h2>
-          <p>The exam has been locked due to suspicious activity.</p>
+        <div className="exam-content" style={{ maxWidth: '500px', textAlign: 'center' }}>
+          <h2 style={{ color: 'var(--danger)', marginBottom: 'var(--space-md)' }}>🔒 Exam Locked</h2>
+          <p style={{ color: 'var(--text-secondary)' }}>The exam has been locked due to suspicious activity.</p>
         </div>
       </div>
     );
@@ -191,8 +186,8 @@ const StartExam = () => {
   if (!exam) {
     return (
       <div className="exam-container">
-        <div className="exam-content">
-          <p>{message || 'Loading exam details...'}</p>
+        <div className="exam-content" style={{ maxWidth: '500px', textAlign: 'center' }}>
+          <p style={{ color: 'var(--text-muted)' }}>{message || 'Loading exam details...'}</p>
         </div>
       </div>
     );
@@ -202,9 +197,12 @@ const StartExam = () => {
     <div className="exam-container">
       {showFullScreenModal && (
         <div className="fullscreen-modal">
-          <h2>Please allow full-screen mode to start the exam</h2>
+          <h2>🖥️ Please allow full-screen mode to start the exam</h2>
+          <p style={{ color: 'var(--text-secondary)', marginBottom: 'var(--space-lg)', textAlign: 'center', maxWidth: '450px' }}>
+            Full-screen mode is required for exam integrity. You will receive warnings if you exit.
+          </p>
           <button onClick={requestFullScreen} className="fullscreen-btn">
-            Go Full Screen & Start Exam
+            Go Full Screen &amp; Start Exam
           </button>
         </div>
       )}
@@ -212,11 +210,13 @@ const StartExam = () => {
         <div className="exam-content">
           <div className="exam-left">
             <h2>{exam.title}</h2>
-            <p>Duration: {exam.duration} minutes</p>
+            <p style={{ color: 'var(--text-secondary)', marginBottom: 'var(--space-md)' }}>
+              ⏱ Duration: {exam.duration} minutes
+            </p>
             <form onSubmit={handleSubmit} className="exam-form">
               {(exam.questions || []).map((question, index) => (
                 <div key={index} className="question-group">
-                  <p>{question.questionText}</p>
+                  <p><strong>Q{index + 1}.</strong> {question.questionText}</p>
                   {question.options && question.options.length > 0 ? (
                     <div className="options-group">
                       {question.options.map((option, idx) => (
@@ -224,7 +224,7 @@ const StartExam = () => {
                           <input
                             type="radio"
                             name={question._id || question.questionText}
-                            value={idx}  // Use index as value
+                            value={idx}
                             onChange={(e) =>
                               handleResponseChange(
                                 question._id || question.questionText,
@@ -240,7 +240,7 @@ const StartExam = () => {
                   ) : (
                     <input
                       type="text"
-                      placeholder="Your answer"
+                      placeholder="Type your answer here..."
                       onChange={(e) =>
                         handleResponseChange(
                           question._id || question.questionText,
@@ -260,8 +260,10 @@ const StartExam = () => {
           </div>
           <div className="exam-right">
             <BehaviorMonitor onWarning={handleWarning} onLockExam={handleLockExam} />
-            <div style={{ marginTop: 12 }}>
-              <strong>Warnings:</strong> {warningCount}
+            <div style={{ marginTop: 12, fontWeight: 600, color: 'var(--text-secondary)' }}>
+              <strong style={{ color: warningCount > 0 ? 'var(--danger)' : 'var(--text-primary)' }}>
+                Warnings: {warningCount}
+              </strong>
             </div>
           </div>
         </div>

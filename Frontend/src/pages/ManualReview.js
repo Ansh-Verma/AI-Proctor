@@ -54,7 +54,6 @@ const ManualReview = () => {
 
   const handleOverrideSubmit = async () => {
     try {
-      // Update the response score in the backend (no unused variable)
       await axios.put(
         `https://ai-proctor-backend-qy09.onrender.com/api/exam-responses/${responseId}`,
         {
@@ -83,7 +82,9 @@ const ManualReview = () => {
     return (
       <div className="responses-container">
         <div className="responses-content">
-          <p>Loading details...</p>
+          <p style={{ color: 'var(--text-muted)', padding: 'var(--space-xl) 0', textAlign: 'center' }}>
+            Loading details...
+          </p>
         </div>
       </div>
     );
@@ -111,7 +112,7 @@ const ManualReview = () => {
       <div className="responses-content">
         <h2>Response Details</h2>
         <button onClick={() => navigate('/exam-responses')} className="back-btn">
-          Back to Responses
+          ← Back to Responses
         </button>
         <div className="review-details">
           <p>
@@ -136,7 +137,7 @@ const ManualReview = () => {
 
           <h3>Descriptive Answers</h3>
           {descriptiveResponses.length === 0 ? (
-            <p>No descriptive responses to review.</p>
+            <p style={{ color: 'var(--text-muted)' }}>No descriptive responses to review.</p>
           ) : (
             descriptiveResponses.map((r, idx) => (
               <div key={idx} className="review-answer-block">

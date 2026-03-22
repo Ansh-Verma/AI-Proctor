@@ -80,7 +80,7 @@ const ExamResponses = () => {
         <div className="filter-sort-container">
           <input 
             type="text"
-            placeholder="Search by student or exam"
+            placeholder="Search by student or exam..."
             value={filterText}
             onChange={(e) => setFilterText(e.target.value)}
           />
@@ -88,18 +88,23 @@ const ExamResponses = () => {
             <option value="desc">Newest First</option>
             <option value="asc">Oldest First</option>
           </select>
-          <button className="export-btn" onClick={exportCSV}>Export CSV</button>
+          <button className="export-btn" onClick={exportCSV}>
+            <i className="fas fa-download" style={{ marginRight: '6px' }}></i>
+            Export CSV
+          </button>
         </div>
         {filteredResponses.length === 0 ? (
-          <p>No responses available at this time.</p>
+          <p style={{ color: 'var(--text-muted)', padding: 'var(--space-xl) 0' }}>
+            No responses available at this time.
+          </p>
         ) : (
           <table className="responses-table">
             <thead>
               <tr>
-                <th>Student Username</th>
+                <th>Student</th>
                 <th>Exam ID</th>
-                <th>Submission Time</th>
-                <th>Plagiarism Score</th>
+                <th>Submitted</th>
+                <th>Plagiarism</th>
                 <th>Score</th>
                 <th>Actions</th>
               </tr>
