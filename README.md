@@ -120,20 +120,6 @@ npm start
 ```
 By default, the frontend runs on `http://localhost:3000`.
 
-## 📸 Screenshots & Walkthrough
-
-| **Student Exam View (Proctored)** | **Admin Exam Creation Dashboard** |
-| :---: | :---: |
-| <img src="https://via.placeholder.com/600x350.png?text=Proctored+Exam+Interface" alt="Exam Interface"> | <img src="https://via.placeholder.com/600x350.png?text=Admin+Dashboard" alt="Admin Interface"> |
-| _Webcam stream securely monitoring user presence._ | _Admin creating MCQs and setting reference answers._ |
-
-| **Manual Review UI** | **Behavior Warning Status** |
-| :---: | :---: |
-| <img src="https://via.placeholder.com/600x350.png?text=Manual+Review+Gradeable+Submissions" alt="Manual Review"> | <img src="https://via.placeholder.com/600x350.png?text=Behavior+Warnings" alt="Status Info"> |
-| _Similarity comparisons against reference texts._ | _Auto-lock notifications triggered securely._ |
-
-> _(Note: Replace placeholders with real project screenshots later)_
-
 ## 🧑‍💻 Usage Instructions
 1. **Register as an Admin:** Start by creating an account and selecting 'Admin' as your profile type. Use the dashboard to define an exam scope, create Multiple-Choice & Descriptive questions, and assign reference answers.
 2. **Register as a Student:** Log in using student credentials, opt into the newly generated exams, and click **Start Exam**.
@@ -150,10 +136,6 @@ Feel free to check out the [issues page](../../issues).
 3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
 4. Push to the Branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
-
-## 📄 License
-
-Distributed under the MIT License. See `LICENSE` for more information.
 
 ---
 <div align="center">
