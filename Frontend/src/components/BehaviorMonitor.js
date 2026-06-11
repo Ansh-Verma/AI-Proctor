@@ -5,7 +5,6 @@ import '../styles.css';
 const BehaviorMonitor = ({ onWarning = () => {}, onLockExam = () => {} }) => {
   const videoRef = useRef(null);
   const [modelsLoaded, setModelsLoaded] = useState(false);
-  const [warningCount, setWarningCount] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
 
   // Pause duration after a warning (in milliseconds)
@@ -66,20 +65,12 @@ const BehaviorMonitor = ({ onWarning = () => {}, onLockExam = () => {} }) => {
               .withFaceLandmarks()
               .withFaceDescriptor();
             if (!detection) {
-              // Issue warning and pause monitoring automatically
-              setWarningCount(prevCount => {
-                const newCount = prevCount + 1;
-                onWarning(newCount); // Let parent know a warning has been issued
-                if (newCount >= 3) {
-                  onLockExam(); // Lock exam after 3 warnings
-                } else {
-                  setIsPaused(true);
-                  setTimeout(() => {
-                    setIsPaused(false);
-                  }, pauseDuration);
-                }
-                return newCount;
-              });
+              // Notify parent of a warning — parent manages the count
+              onWarning();
+              setIsPaused(true);
+              setTimeout(() => {
+                setIsPaused(false);
+              }, pauseDuration);
             }
           } catch (err) {
             // detection may throw if video not ready — ignore or log
@@ -94,9 +85,8 @@ const BehaviorMonitor = ({ onWarning = () => {}, onLockExam = () => {} }) => {
   return (
     <div className="behavior-monitor">
       <video ref={videoRef} autoPlay muted width="300" height="225" />
-      <p>Warnings: {warningCount}</p>
     </div>
   );
 };
 
-export default BehaviorMonitor;
+export default BehaviorMonitor;

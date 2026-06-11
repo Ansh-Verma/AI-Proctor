@@ -61,6 +61,8 @@ const StartExam = () => {
     };
 
     const handleVisibilityChange = () => {
+      // Only trigger warning when the tab becomes hidden, not when returning
+      if (!document.hidden) return;
       setWarningCount(prev => {
         const newCount = prev + 1;
         alert(`Warning ${newCount}: Do not switch tabs or minimize the window.`);
@@ -124,24 +126,18 @@ const StartExam = () => {
     if (examId) fetchExam();
   }, [examId]);
 
-  // Callback from BehaviorMonitor (if additional behavioral warnings are needed)
-  const handleWarning = (countFromMonitor) => {
-    if (typeof countFromMonitor === 'number') {
-      setWarningCount(countFromMonitor);
-      if (countFromMonitor >= WARNING_LIMIT) {
+  // Callback from BehaviorMonitor — increments the single shared counter
+  const handleWarning = useCallback(() => {
+    setWarningCount(prev => {
+      const newCount = prev + 1;
+      if (newCount >= WARNING_LIMIT) {
         handleLockExam();
       } else {
-        alert(`Warning ${countFromMonitor}: Please focus on the exam.`);
+        alert(`Warning ${newCount}: Please focus on the exam.`);
       }
-    } else {
-      setWarningCount(prev => {
-        const newCount = prev + 1;
-        if (newCount >= WARNING_LIMIT) handleLockExam();
-        else alert(`Warning ${newCount}: Please focus on the exam.`);
-        return newCount;
-      });
-    }
-  };
+      return newCount;
+    });
+  }, [handleLockExam]);
 
   // Capture student's answer for each question
   const handleResponseChange = (questionId, value) => {
@@ -164,8 +160,13 @@ const StartExam = () => {
 
     try {
       const res = await axios.post('https://ai-proctor-backend-qy09.onrender.com/api/exam-responses/submit', submission);
-      setMessage('Exam submitted successfully!');
       console.log('Submission response:', res.data);
+      // Exit fullscreen before navigating
+      if (document.fullscreenElement) {
+        try { await document.exitFullscreen(); } catch (_) {}
+      }
+      alert('Exam submitted successfully!');
+      navigate('/dashboard');
     } catch (error) {
       console.error('Error submitting exam:', error);
       setMessage('Error submitting exam.');
@@ -238,9 +239,9 @@ const StartExam = () => {
                       ))}
                     </div>
                   ) : (
-                    <input
-                      type="text"
+                    <textarea
                       placeholder="Type your answer here..."
+                      rows="4"
                       onChange={(e) =>
                         handleResponseChange(
                           question._id || question.questionText,

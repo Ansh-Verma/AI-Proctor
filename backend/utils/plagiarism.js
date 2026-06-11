@@ -1,4 +1,5 @@
-const fetch = require('node-fetch'); // or import fetch if using newer Node
+// backend/utils/plagiarism.js
+// Node 18+ provides a native global fetch — no need for node-fetch
 
 const computePlagiarismScore = async (answer, reference) => {
   try {
@@ -23,3 +24,4 @@ const computePlagiarismScore = async (answer, reference) => {
 };
 
 module.exports = { computePlagiarismScore };
+

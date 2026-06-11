@@ -2,7 +2,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';  // Use this import for React 18+
 import './index.css';
-import './styles.css';
 import App from './App';
 
 // Create the root element using ReactDOM.createRoot()

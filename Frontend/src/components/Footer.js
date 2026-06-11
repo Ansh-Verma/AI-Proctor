@@ -1,5 +1,6 @@
 // src/components/Footer.js
 import React from 'react'
+import { Link } from 'react-router-dom';
 import '../styles.css';
 
 export default function Footer() {
@@ -7,8 +8,8 @@ export default function Footer() {
     <footer className="footer">
       <p>© {new Date().getFullYear()} AI‑Proctored Exam Portal. All rights reserved.</p>
       <div className="footer__links">
-        <a href="/privacy">Privacy Policy</a>
-        <a href="/contact">Contact Us</a>
+        <Link to="/">Privacy Policy</Link>
+        <Link to="/">Contact Us</Link>
       </div>
     </footer>
   )

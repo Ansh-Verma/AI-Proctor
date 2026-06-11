@@ -20,7 +20,8 @@ export default function Navbar() {
   const showLogout   = !noLogoutPaths.includes(location.pathname);
 
   const handleLogout = () => {
-    // clear whatever you need (e.g. auth tokens)
+    // Clear stored auth data
+    localStorage.removeItem('username');
     navigate("/", { replace: true });
   };
 

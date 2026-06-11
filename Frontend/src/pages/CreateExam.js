@@ -33,6 +33,13 @@ const CreateExam = () => {
       newQuestions[index].options = [];
       newQuestions[index].correctAnswer = null;
     }
+    // When switching back to multiple choice, restore options if empty
+    if (field === 'type' && value === QUESTION_TYPES.MULTIPLE_CHOICE) {
+      if (!newQuestions[index].options || newQuestions[index].options.length === 0) {
+        newQuestions[index].options = ['', '', ''];
+      }
+      newQuestions[index].referenceAnswer = '';
+    }
     
     setQuestions(newQuestions);
     console.log(`Updated question ${index}:`, newQuestions[index]);

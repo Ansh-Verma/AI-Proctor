@@ -53,14 +53,24 @@ const ManualReview = () => {
       : 0;
 
   const handleOverrideSubmit = async () => {
+    // Validate override score
+    if (overrideScore === '' || overrideScore === null) {
+      setError('Please enter a score.');
+      return;
+    }
+    const scoreNum = Number(overrideScore);
+    if (isNaN(scoreNum) || scoreNum < 0 || scoreNum > 100) {
+      setError('Score must be a number between 0 and 100.');
+      return;
+    }
     try {
       await axios.put(
         `https://ai-proctor-backend-qy09.onrender.com/api/exam-responses/${responseId}`,
         {
-          score: Number(overrideScore),
+          score: scoreNum,
         }
       );
-      alert(`Override submitted: new score = ${overrideScore}`);
+      alert(`Override submitted: new score = ${scoreNum}`);
       navigate('/exam-responses');
     } catch (err) {
       console.error('Error overriding score:', err);

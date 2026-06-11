@@ -1,25 +1,27 @@
 // src/pages/ProfilePage.js
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../styles.css';
 
 const ProfilePage = () => {
   const [username, setUsername] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Retrieve the username from localStorage
     const storedUsername = localStorage.getItem('username');
     if (!storedUsername) {
-      // If no username is found, redirect to login (or handle as needed)
-      window.location.href = '/';
+      // If no username is found, redirect to login
+      navigate('/', { replace: true });
     } else {
       setUsername(storedUsername);
     }
-  }, []);
+  }, [navigate]);
 
   const handleLogout = () => {
     // Clear localStorage and redirect to login
     localStorage.removeItem('username');
-    window.location.href = '/';
+    navigate('/', { replace: true });
   };
 
   return (
@@ -43,3 +45,4 @@ const ProfilePage = () => {
 };
 
 export default ProfilePage;
+

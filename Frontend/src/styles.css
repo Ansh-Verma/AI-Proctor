@@ -1229,6 +1229,28 @@
   box-shadow: 0 0 0 3px var(--accent-glow);
 }
 
+/* Descriptive textarea */
+.question-group textarea {
+  width: 100%;
+  padding: 11px 14px;
+  margin-top: var(--space-sm);
+  border: 1.5px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  font-size: 0.95rem;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  transition: all var(--transition-fast);
+  resize: vertical;
+  min-height: 80px;
+  font-family: inherit;
+}
+
+.question-group textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
 /* Submit button */
 .submit-exam-btn {
   background: linear-gradient(135deg, var(--accent), var(--accent-hover));

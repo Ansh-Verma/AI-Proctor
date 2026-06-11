@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const bcrypt = require('bcryptjs');
 const User = require('../models/usermodel.js');
 
 // Helper function to compute Euclidean distance between two arrays
@@ -12,19 +13,24 @@ const euclideanDistance = (arr1, arr2) => {
   return Math.sqrt(sum);
 };
 
-// Registration endpoint: Save new user with face descriptor and role
+// Registration endpoint: Save new user with hashed password, face descriptor, and role
 router.post('/register', async (req, res) => {
   try {
     const { username, password, faceDescriptor, role } = req.body;
-    // Create a new user with the provided role, defaulting to 'student'
+
+    // Hash the password before storing
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    // Create a new user with the hashed password
     const user = new User({ 
       username, 
-      password, 
+      password: hashedPassword, 
       faceDescriptor, 
       role: role || 'student'
     });
     await user.save();
-    res.status(201).json({ message: 'User registered successfully', user });
+    res.status(201).json({ message: 'User registered successfully', user: { username: user.username, role: user.role } });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -47,8 +53,9 @@ router.post('/login/:role', async (req, res) => {
       return res.status(401).json({ success: false, message: 'User not found.' });
     }
 
-    // 2. Check password
-    if (user.password !== password) {
+    // 2. Check password using bcrypt
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
       return res.status(401).json({ success: false, message: 'Invalid credentials.' });
     }
 
@@ -67,8 +74,8 @@ router.post('/login/:role', async (req, res) => {
       return res.status(401).json({ success: false, message: 'Face authentication failed.' });
     }
 
-    // If all checks pass, login is successful
-    res.json({ success: true, message: 'Login successful.' });
+    // If all checks pass, login is successful — include user data for frontend redirect
+    res.json({ success: true, message: 'Login successful.', user: { username: user.username, role: user.role } });
   } catch (error) {
     console.error('Login error:', error);
     res.status(500).json({ success: false, message: 'Server error.' });
@@ -76,3 +83,4 @@ router.post('/login/:role', async (req, res) => {
 });
 
 module.exports = router;
+
